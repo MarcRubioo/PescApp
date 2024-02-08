@@ -47,6 +47,9 @@ class FragmentLogin : Fragment() {
                         }
                     }
             }
+            else{
+                Toast.makeText(binding.root.context, "Llena todos los campos ", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

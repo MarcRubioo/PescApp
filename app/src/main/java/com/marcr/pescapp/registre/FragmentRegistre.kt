@@ -35,15 +35,24 @@ class FragmentRegistre : Fragment() {
 
     private fun setup(){
         binding.btnLoginNext.setOnClickListener{
-            if (binding.editTextUser.text.isNotBlank() && binding.editTextEmail2.text.isNotEmpty() && binding.editTextPassword.text.isNotEmpty()){
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(binding.editTextEmail2.text.toString(), binding.editTextPassword.text.toString())
-                    .addOnCompleteListener{
-                        if (it.isSuccessful){
-                            findNavController().navigate(R.id.action_fragmentRegistre_to_fragmentLogin, null)
-                        } else{
-                            Toast.makeText(binding.root.context, "Credencials Incorrectes!!! ", Toast.LENGTH_SHORT).show()
+            if (binding.editTextUser.text.isNotBlank() && binding.editTextEmail2.text.isNotEmpty() && binding.editTextEdat.text.isNotEmpty() && binding.editTextPassword.text.isNotEmpty() && binding.editTextConfirmPassword.text.isNotEmpty()){
+                if(binding.editTextPassword.text.toString() == (binding.editTextConfirmPassword.text.toString())){
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(binding.editTextEmail2.text.toString(), binding.editTextPassword.text.toString())
+                        .addOnCompleteListener{
+                            if (it.isSuccessful){
+                                Toast.makeText(binding.root.context, "Usuario creado !!! ", Toast.LENGTH_SHORT).show()
+                                findNavController().navigate(R.id.action_fragmentRegistre_to_fragmentLogin, null)
+                            } else{
+                                Toast.makeText(binding.root.context, "Problemas al crear el usuario ", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    }
+
+                }else{
+                    Toast.makeText(binding.root.context, "Las contraseñas no coinciden ", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else{
+                Toast.makeText(binding.root.context, "Llena todos los campos ", Toast.LENGTH_SHORT).show()
             }
         }
     }
