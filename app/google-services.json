@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743652485767",
+    "project_id": "firbasepescapp",
+    "storage_bucket": "firbasepescapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743652485767:android:d8752b8f4bc825f97ca622",
+        "android_client_info": {
+          "package_name": "com.marcr.pescapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsJlciI5Uqv3_FrgibJeuqwX84SNzg1RQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
