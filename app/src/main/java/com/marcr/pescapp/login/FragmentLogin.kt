@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.marcr.pescapp.FragmentActivity
@@ -17,6 +18,7 @@ import com.marcr.pescapp.databinding.FragmentLoginBinding
 
 class FragmentLogin : Fragment() {
     private lateinit var binding: FragmentLoginBinding
+    private val viewModel: ViewModelLogin by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
