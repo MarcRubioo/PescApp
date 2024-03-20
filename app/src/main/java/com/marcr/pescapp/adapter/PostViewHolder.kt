@@ -6,7 +6,6 @@ import com.marcr.pescapp.data.Post
 import com.marcr.pescapp.databinding.ItemPostBinding
 
 class PostViewHolder (private var binding: ItemPostBinding): RecyclerView.ViewHolder(binding.root) {
-
     fun render(postModel: Post){
         binding.email.text = postModel.email
         binding.category.text = postModel.categoryPost

@@ -10,7 +10,7 @@ class ViewModelAddPost: ViewModel()  {
 
     private var imagePost: Uri? = null
 
-    fun setImageUri(uri: Uri) {
+    fun setImageUri(uri: Uri?) {
         imagePost = uri
     }
 

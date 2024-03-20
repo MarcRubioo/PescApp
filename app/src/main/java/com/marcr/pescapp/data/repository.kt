@@ -32,7 +32,7 @@ class repository {
             storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
                 imguri = uri.toString()
 
-                if (imguri != null){
+                if (imguri != null) {
                     user.password?.let {
                         FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.email, it)
                             .addOnCompleteListener { task ->
@@ -60,25 +60,25 @@ class repository {
             val db = FirebaseFirestore.getInstance()
             val storage = FirebaseStorage.getInstance().reference.child(post.email + "ImagePost")
 
-            uri?.let{
-                storage.putFile(it).addOnCompleteListener{task->
-                    if (task.isSuccessful){
+            uri?.let {
+                storage.putFile(it).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
                         storage.downloadUrl.addOnSuccessListener { uri ->
-                        db.collection("posts").add(
-                            hashMapOf(
-                                "email" to post.email,
-                                "image" to uri.toString(),
-                                "title" to post.titlePost,
-                                "location" to post.sitePost,
-                                "category" to post.categoryPost
+                            db.collection("posts").add(
+                                hashMapOf(
+                                    "email" to post.email,
+                                    "image" to uri.toString(),
+                                    "title" to post.titlePost,
+                                    "location" to post.sitePost,
+                                    "category" to post.categoryPost
+                                )
                             )
-                        )
-                            .addOnSuccessListener {
-                                callback(true)
-                            }
-                            .addOnFailureListener { e ->
-                                callback(false)
-                            }
+                                .addOnSuccessListener {
+                                    callback(true)
+                                }
+                                .addOnFailureListener { e ->
+                                    callback(false)
+                                }
                         }
                     }
                 }
@@ -88,38 +88,51 @@ class repository {
         fun modifyDataUser(user: User, uri: Uri?, context: Context, callback: (Boolean) -> Unit) {
             val storage = FirebaseStorage.getInstance().reference.child(user.email + "Image")
 
-            uri?.let{
-                storage.putFile(it).addOnCompleteListener{task->
-                    if (task.isSuccessful){
-                        storage.downloadUrl.addOnSuccessListener { uri ->
-                            val userData = if (user.img != null && user.img.isNotBlank()) {
-                                hashMapOf(
-                                    "img" to uri.toString(),
-                                    "name" to user.name,
-                                    "edat" to user.age
-                                )
-                            } else {
-                                hashMapOf(
-                                    "name" to user.name,
-                                    "edat" to user.age
-                                )
+            if (uri != null) {
+                uri?.let {
+                    storage.putFile(it).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            storage.downloadUrl.addOnSuccessListener { uri ->
+                                val userData =
+                                    hashMapOf(
+                                        "img" to uri.toString(),
+                                        "name" to user.name,
+                                        "edat" to user.age
+                                    )
+
+
+                                val db = FirebaseFirestore.getInstance()
+
+                                db.collection("users").document(user.email)
+                                    .update(userData as Map<String, Any>)
+                                    .addOnSuccessListener {
+                                        callback(true)
+                                    }
+                                    .addOnFailureListener { e ->
+                                        callback(false)
+                                    }
                             }
-
-                            val db = FirebaseFirestore.getInstance()
-
-                            db.collection("users").document(user.email)
-                                .update(userData as Map<String, Any>)
-                                .addOnSuccessListener {
-                                    callback(true)
-                                }
-                                .addOnFailureListener { e ->
-                                    callback(false)
-                                }
                         }
                     }
-
                 }
+            } else {
+                val userData2 = hashMapOf(
+                    "name" to user.name,
+                    "edat" to user.age
+                )
+
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("users").document(user.email)
+                    .update(userData2 as Map<String, Any>)
+                    .addOnSuccessListener {
+                        callback(true)
+                    }
+                    .addOnFailureListener { e ->
+                        callback(false)
+                    }
             }
+
         }
 
         fun deleteUserData(email: String, context: Context, callback: (Boolean) -> Unit) {
@@ -163,7 +176,7 @@ class repository {
                 }
         }
 
-        fun getAllPosts(context: Context): MutableList<Post> {
+        fun getAllPosts(callback: (List<Post>) -> Unit) {
             val db = FirebaseFirestore.getInstance()
             val postsList = mutableListOf<Post>()
             db.collection("posts")
@@ -171,20 +184,20 @@ class repository {
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
                         val post = Post(
-                            document.data["email"].toString(),
-                            document.data["image"].toString(),
-                            document.data["title"].toString(),
-                            document.data["location"].toString(),
-                            document.data["category"].toString(),
-
+                            document.getString("email") ?: "",
+                            document.getString("image") ?: "",
+                            document.getString("title") ?: "",
+                            document.getString("location") ?: "",
+                            document.getString("category") ?: ""
                         )
                         postsList.add(post)
                     }
+                    callback(postsList)
                 }
                 .addOnFailureListener { exception ->
+                    // Manejar el error aquí
                 }
-
-            return  postsList
         }
+
     }
 }

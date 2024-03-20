@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -25,18 +26,11 @@ class perfilDadesFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private var imageUri: Uri? = null
 
-    companion object {
-        private const val IMAGE_PICK_PROFILE = 1000
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == perfilDadesFragment.IMAGE_PICK_PROFILE) {
-            data?.data?.let { uri ->
-                binding.imageProfile.setImageURI(uri)
-                viewModel.setImageUri(uri)
-            }
-        }
+    private val resultLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()){
+        viewModel.setImageUri(it)
+        imageUri = it
+        binding.imageProfile.setImageURI(it)
     }
 
     override fun onCreateView(
@@ -51,9 +45,7 @@ class perfilDadesFragment : Fragment() {
 
 
         binding.imageProfile.setOnClickListener{
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, perfilDadesFragment.IMAGE_PICK_PROFILE)
+            resultLauncher.launch("image/*")
         }
 
         if (userLog != null) {

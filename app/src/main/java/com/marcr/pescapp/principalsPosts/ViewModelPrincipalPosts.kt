@@ -11,7 +11,9 @@ class ViewModelPrincipalPosts: ViewModel() {
     private var _posts= MutableLiveData<MutableList<Post>>()
     val posts : LiveData<MutableList<Post>> = _posts
 
-    fun getPosts (context: Context){
-        _posts.value = repository.getAllPosts(context)
+    fun getPosts() {
+        repository.getAllPosts { postsList ->
+            _posts.value = postsList.toMutableList()
+        }
     }
 }

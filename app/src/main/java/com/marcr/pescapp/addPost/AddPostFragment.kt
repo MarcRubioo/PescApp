@@ -2,6 +2,7 @@ package com.marcr.pescapp.addPost
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,18 +28,13 @@ class AddPostFragment : Fragment() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
 
-    companion object {
-        private const val IMAGE_PICK_CODE = 1000
-    }
+    private var imageUri: Uri? = null
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            data?.data?.let { imageUri ->
-                binding.imageSelector.setImageURI(imageUri)
-                viewModel.setImageUri(imageUri)
-            }
-        }
+    private val resultLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()){
+        viewModel.setImageUri(it)
+        imageUri = it
+        binding.imageSelector.setImageURI(it)
     }
 
     override fun onCreateView(
@@ -51,10 +48,7 @@ class AddPostFragment : Fragment() {
         var userLog = auth.currentUser
 
         binding.imageSelector.setOnClickListener{
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, IMAGE_PICK_CODE)
-
+            resultLauncher.launch("image/*")
         }
 
         binding.btnAddPost.setOnClickListener {
