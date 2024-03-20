@@ -6,8 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.marcr.pescapp.data.Post
 import com.marcr.pescapp.databinding.ItemPostBinding
+import com.marcr.pescapp.principalsPosts.principalPostsFragment
 
-class PostAdapter (val context: Context, private val postList:List<Post>) : RecyclerView.Adapter<PostViewHolder>(){
+class PostAdapter(private val context: Context, private val postList: List<Post>, private val listener: principalPostsFragment) : RecyclerView.Adapter<PostViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val layoutInflater = ItemPostBinding.inflate(LayoutInflater.from(context), parent, false)
         return PostViewHolder(layoutInflater)
@@ -17,7 +23,10 @@ class PostAdapter (val context: Context, private val postList:List<Post>) : Recy
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val item = postList[position]
-        holder.render(item)
-    }
+        holder.bind(item)
 
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(position)
+        }
+    }
 }
