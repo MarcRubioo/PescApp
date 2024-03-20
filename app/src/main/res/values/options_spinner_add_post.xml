@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="options_array">
+        <item>Categoria</item>
+        <item>Surfcating</item>
+        <item>Spining</item>
+        <item>Jiging</item>
+    </string-array>
+</resources>

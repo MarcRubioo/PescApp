@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.marcr.pescapp.FragmentActivity
-import com.marcr.pescapp.ProviderType
 import com.marcr.pescapp.R
 import com.marcr.pescapp.databinding.FragmentLoginBinding
 
@@ -24,7 +23,6 @@ class FragmentLogin : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater)
 
         binding.textViewCrearCompteBTN.setOnClickListener {
@@ -32,35 +30,37 @@ class FragmentLogin : Fragment() {
         }
 
         setup()
+        setupObservers()
 
         return binding.root
     }
 
-    private fun setup(){
-        binding.btnLoginNext.setOnClickListener{
-            if (binding.editTextUser.text.isNotBlank() && binding.editTextPassword.text.isNotEmpty()){
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(binding.editTextUser.text.toString(), binding.editTextPassword.text.toString())
-                    .addOnCompleteListener{
-                        if (it.isSuccessful){
-                            Toast.makeText(binding.root.context, "Credencials Correctes!!! ", Toast.LENGTH_SHORT).show()
-                            showHome(it.result?.user?.email ?: "", ProviderType.BASIC)
-                        } else{
-                            Toast.makeText(binding.root.context, "Credencials Incorrectes!!! ", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+    private fun setupObservers() {
+        viewModel.loginSuccess.observe(viewLifecycleOwner, Observer { success ->
+            if (success) {
+                showHome()
+            } else {
+                Toast.makeText(requireContext(), "Error al iniciar sesión", Toast.LENGTH_SHORT).show()
             }
-            else{
-                Toast.makeText(binding.root.context, "Llena todos los campos ", Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun setup() {
+        binding.btnLoginNext.setOnClickListener {
+            if (binding.editTextUser.text.isNotBlank() && binding.editTextPassword.text.isNotEmpty()) {
+                viewModel.loginUser(
+                    requireContext(),
+                    binding.editTextUser.text.toString(),
+                    binding.editTextPassword.text.toString()
+                )
+            } else {
+                Toast.makeText(requireContext(), "Llena todos los campos ", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun showHome(user: String, provider: ProviderType){
-        val homeIntent = Intent(requireContext(), FragmentActivity::class.java).apply {
-            putExtra("user", user)
-            putExtra("provider", provider.name)
-        }
+    private fun showHome() {
+        val homeIntent = Intent(requireContext(), FragmentActivity::class.java).apply {}
         startActivity(homeIntent)
     }
-
 }

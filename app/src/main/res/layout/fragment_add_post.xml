@@ -1,14 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".addPost.AddPostFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="hello_addpost_fragment" />
+        tools:context=".addPost.AddPostFragment">
 
-</FrameLayout>
+        <EditText
+            android:id="@+id/editTextPublicaion"
+            android:layout_width="212dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="52dp"
+            android:background="@drawable/blue_border"
+            android:ems="10"
+            android:hint="Titulo Publicación"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:paddingStart="8dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <EditText
+            android:id="@+id/editTextLugar"
+            android:layout_width="212dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/blue_border"
+            android:ems="10"
+            android:hint="Lugar"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:paddingStart="8dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextPublicaion" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="212dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/spinner_background"
+            android:entries="@array/options_array"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextLugar" />
+
+        <Button
+            android:id="@+id/btnAddPost"
+            android:layout_width="212dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="56dp"
+            android:backgroundTint="@color/naranja"
+            android:text="Añadir Post"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerCategory" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Seleccionar Imagen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageSelector" />
+
+        <ImageView
+            android:id="@+id/imageSelector"
+            android:layout_width="190dp"
+            android:layout_height="117dp"
+            android:layout_marginTop="128dp"
+            android:src="@drawable/addpostimage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.475"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

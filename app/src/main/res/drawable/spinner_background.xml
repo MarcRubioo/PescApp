@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="2dp"
+                android:color="#01556d" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    <item
+        android:right="12dp"
+        android:gravity="end|center_vertical">
+        <bitmap
+            android:src="@drawable/flechaspinner"
+            android:tint="#01556d"
+            android:gravity="end|center_vertical"
+            android:scaleX="0.2"
+            android:scaleY="0.2" />
+    </item>
+</layer-list>

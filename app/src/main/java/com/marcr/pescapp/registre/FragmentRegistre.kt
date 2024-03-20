@@ -1,6 +1,5 @@
 package com.marcr.pescapp.registre
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,16 +9,14 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.marcr.pescapp.FragmentActivity
-import com.marcr.pescapp.ProviderType
+import com.google.firebase.firestore.FirebaseFirestore
 import com.marcr.pescapp.R
-import com.marcr.pescapp.databinding.FragmentLoginBinding
 import com.marcr.pescapp.databinding.FragmentRegistreBinding
 
 class FragmentRegistre : Fragment() {
     private lateinit var binding: FragmentRegistreBinding
     private val viewModel: ViewModelRegistre by viewModels()
-
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +26,6 @@ class FragmentRegistre : Fragment() {
 
         binding = FragmentRegistreBinding.inflate(inflater)
 
-        //Setup
         setup()
 
         return binding.root
@@ -39,16 +35,13 @@ class FragmentRegistre : Fragment() {
         binding.btnLoginNext.setOnClickListener{
             if (binding.editTextUser.text.isNotBlank() && binding.editTextEmail2.text.isNotEmpty() && binding.editTextEdat.text.isNotEmpty() && binding.editTextPassword.text.isNotEmpty() && binding.editTextConfirmPassword.text.isNotEmpty()){
                 if(binding.editTextPassword.text.toString() == (binding.editTextConfirmPassword.text.toString())){
-                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(binding.editTextEmail2.text.toString(), binding.editTextPassword.text.toString())
-                        .addOnCompleteListener{
-                            if (it.isSuccessful){
-                                Toast.makeText(binding.root.context, "Usuario creado !!! ", Toast.LENGTH_SHORT).show()
-                                findNavController().navigate(R.id.action_fragmentRegistre_to_fragmentLogin, null)
-                            } else{
-                                Toast.makeText(binding.root.context, "Problemas al crear el usuario ", Toast.LENGTH_SHORT).show()
-                            }
+                    viewModel.registerUser(requireContext(), binding.editTextEmail2.text.toString(), binding.editTextUser.text.toString(), binding.editTextPassword.text.toString(), binding.editTextEdat.text.toString(), "") { success ->
+                        if (success) {
+                            findNavController().navigate(R.id.action_fragmentRegistre_to_fragmentLogin, null)
+                        } else {
+                            Toast.makeText(requireContext(), "Error al registrar usuario", Toast.LENGTH_SHORT).show()
                         }
-
+                    }
                 }else{
                     Toast.makeText(binding.root.context, "Las contraseñas no coinciden ", Toast.LENGTH_SHORT).show()
                 }

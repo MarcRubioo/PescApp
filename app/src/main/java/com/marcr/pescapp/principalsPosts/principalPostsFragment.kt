@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.marcr.pescapp.R
-import com.marcr.pescapp.databinding.FragmentLoginBinding
+import com.marcr.pescapp.adapter.PostAdapter
+import com.marcr.pescapp.databinding.FragmentPrincipalPostsBinding
 
 class principalPostsFragment : Fragment() {
-    private lateinit var binding: FragmentLoginBinding
+    private lateinit var binding: FragmentPrincipalPostsBinding
     private val viewModel: ViewModelPrincipalPosts by viewModels()
 
     override fun onCreateView(
@@ -18,6 +18,14 @@ class principalPostsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        binding = FragmentPrincipalPostsBinding.inflate(inflater)
+
+        viewModel.getPosts(requireContext())
+
+        viewModel.posts.observe(viewLifecycleOwner){llistaPost->
+            binding.recyclerPosts.adapter = PostAdapter(llistaPost)
+        }
+
         return binding.root
     }
 }

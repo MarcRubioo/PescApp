@@ -14,10 +14,27 @@
         android:id="@+id/addPostFragment2"
         android:name="com.marcr.pescapp.addPost.AddPostFragment"
         android:label="fragment_add_post"
-        tools:layout="@layout/fragment_add_post" />
+        tools:layout="@layout/fragment_add_post" >
+        <action
+            android:id="@+id/action_addPostFragment2_to_principalPostsFragment2"
+            app:destination="@id/principalPostsFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/perfilFragment2"
         android:name="com.marcr.pescapp.perfil.PerfilFragment"
         android:label="fragment_perfil"
-        tools:layout="@layout/fragment_perfil" />
+        tools:layout="@layout/fragment_perfil" >
+        <action
+            android:id="@+id/action_perfilFragment2_to_perfilDadesFragment"
+            app:destination="@id/perfilDadesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/perfilDadesFragment"
+        android:name="com.marcr.pescapp.perfilDades.perfilDadesFragment"
+        android:label="fragment_perfil_dades"
+        tools:layout="@layout/fragment_perfil_dades" >
+        <action
+            android:id="@+id/action_perfilDadesFragment_to_perfilFragment2"
+            app:destination="@id/perfilFragment2" />
+    </fragment>
 </navigation>

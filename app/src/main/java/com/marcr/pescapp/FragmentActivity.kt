@@ -7,7 +7,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.marcr.pescapp.databinding.ActivityFragmentBinding
-import com.marcr.pescapp.databinding.ActivityMainBinding
 
 enum class ProviderType{
     BASIC

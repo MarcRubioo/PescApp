@@ -77,4 +77,14 @@ dependencies {
     //Firebase Auth
     implementation("com.google.firebase:firebase-auth")
 
+    //FireStore
+    implementation("com.google.firebase:firebase-firestore:24.10.3")
+
+    //FirebaseCore
+    implementation ("com.google.firebase:firebase-core:20.0.1")
+
+    //Cloud Storage
+    implementation ("com.google.firebase:firebase-storage:20.0.0")
+
+
 }

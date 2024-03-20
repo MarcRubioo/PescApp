@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import com.marcr.pescapp.R
 import com.marcr.pescapp.databinding.FragmentBuscadorBinding
+import com.marcr.pescapp.databinding.FragmentLoginBinding
 import com.marcr.pescapp.databinding.FragmentPerfilBinding
 import com.marcr.pescapp.perfil.ViewModelPerfil
 
@@ -20,6 +21,7 @@ class BuscadorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        binding = FragmentBuscadorBinding.inflate(inflater)
         return binding.root
     }
 }
