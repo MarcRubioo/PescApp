@@ -5,16 +5,20 @@
         android:id="@+id/principalPostsFragment2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Posts" />
+        android:title="Posts"
+        android:icon="@drawable/iconhome" />
+
     <item
         android:id="@+id/addPostFragment2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="AddPost" />
+        android:title="AddPost"
+        android:icon="@drawable/iconadd"/>
 
     <item
         android:id="@+id/perfilFragment2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Perfil" />
+        android:title="Perfil"
+        android:icon="@drawable/iconperfil"/>
 </menu>

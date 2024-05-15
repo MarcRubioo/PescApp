@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.marcr.pescapp.R
@@ -21,30 +22,23 @@ class principalPostsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         binding = FragmentPrincipalPostsBinding.inflate(inflater)
 
         val manager = LinearLayoutManager(requireContext())
 
         binding.recyclerPosts.layoutManager = manager
 
+        binding.imageBuscador.setOnClickListener {
+            findNavController().navigate(R.id.action_principalPostsFragment2_to_buscadorFragment, null)
+        }
+
         viewModel.getPosts()
 
         viewModel.posts.observe(viewLifecycleOwner){llistaPost->
-            binding.recyclerPosts.adapter = PostAdapter(requireContext(), llistaPost, this)
+            binding.recyclerPosts.adapter = PostAdapter(requireContext(), llistaPost)
         }
 
         return binding.root
-    }
-    fun onItemClick(position: Int) {
-        if (selectedItemPosition != RecyclerView.NO_POSITION) {
-            val previousView = binding.recyclerPosts.layoutManager?.findViewByPosition(selectedItemPosition)
-            previousView?.setBackgroundResource(android.R.color.transparent)
-        }
-
-        val selectedView = binding.recyclerPosts.layoutManager?.findViewByPosition(position)
-        selectedView?.setBackgroundResource(R.drawable.orange_border)
-
-        selectedItemPosition = position
     }
 }

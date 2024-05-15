@@ -43,7 +43,10 @@ class repository {
                                             "email" to user.email,
                                             "password" to user.password,
                                             "edat" to user.age,
-                                            "img" to imguri
+                                            "img" to imguri,
+                                            "description" to user.description,
+                                            "followers" to user.followers,
+                                            "following" to user.following
                                         )
                                     )
                                     callback(true)
@@ -96,6 +99,7 @@ class repository {
                                 val userData =
                                     hashMapOf(
                                         "img" to uri.toString(),
+                                        "description" to user.description,
                                         "name" to user.name,
                                         "edat" to user.age
                                     )
@@ -118,7 +122,8 @@ class repository {
             } else {
                 val userData2 = hashMapOf(
                     "name" to user.name,
-                    "edat" to user.age
+                    "edat" to user.age,
+                    "description" to user.description
                 )
 
                 val db = FirebaseFirestore.getInstance()
@@ -138,6 +143,7 @@ class repository {
         fun deleteUserData(email: String, context: Context, callback: (Boolean) -> Unit) {
             val auth = FirebaseAuth.getInstance()
             val db = FirebaseFirestore.getInstance()
+
 
             auth.currentUser?.delete()?.addOnCompleteListener { authTask ->
                 if (authTask.isSuccessful) {
@@ -164,8 +170,11 @@ class repository {
                         val name = document.getString("name") ?: ""
                         val age = document.getString("edat") ?: ""
                         val img = document.getString("img") ?: ""
+                        val desc = document.getString("description") ?: ""
+                        val followers = document.getString("followers") ?: ""
+                        val following = document.getString("following") ?: ""
 
-                        val user = User(userEmail, name, "", age, img)
+                        val user = User(userEmail, name, "", age, img,desc,followers,following)
                         callback(user)
                     } else {
                         callback(null)
@@ -198,6 +207,91 @@ class repository {
                     // Manejar el error aquí
                 }
         }
+
+        fun getUsersSearch(callback: (List<User>) -> Unit) {
+            val db = FirebaseFirestore.getInstance()
+            val userSearchList = mutableListOf<User>()
+            db.collection("users")
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        val user = User(
+                            document.getString("email") ?: "",
+                            document.getString("name") ?: "",
+                            document.getString("password") ?: "",
+                            document.getString("edat") ?: "",
+                            document.getString("img") ?: "",
+                            document.getString("description") ?: "",
+                            document.getString("followers") ?: "",
+                            document.getString("following") ?: "",
+                        )
+                        userSearchList.add(user)
+                    }
+                    callback(userSearchList)
+                }
+                .addOnFailureListener { exception ->
+
+                }
+        }
+
+        fun getPostProfile(callback: (List<Post>) -> Unit) {
+            val db = FirebaseFirestore.getInstance()
+            val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+
+            if (currentUserEmail != null) {
+                val postsList = mutableListOf<Post>()
+
+                db.collection("posts")
+                    .whereEqualTo("email", currentUserEmail)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val post = Post(
+                                document.getString("email") ?: "",
+                                document.getString("image") ?: "",
+                                document.getString("title") ?: "",
+                                document.getString("location") ?: "",
+                                document.getString("category") ?: ""
+                            )
+                            postsList.add(post)
+                        }
+                        callback(postsList)
+                    }
+                    .addOnFailureListener { exception ->
+                        // Manejar el error aquí
+                    }
+            }
+        }
+
+        fun getPostProfileSearch(email: String, callback: (List<Post>) -> Unit) {
+            val db = FirebaseFirestore.getInstance()
+
+            if (email != null) {
+                val postsList = mutableListOf<Post>()
+
+                db.collection("posts")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val post = Post(
+                                document.getString("email") ?: "",
+                                document.getString("image") ?: "",
+                                document.getString("title") ?: "",
+                                document.getString("location") ?: "",
+                                document.getString("category") ?: ""
+                            )
+                            postsList.add(post)
+                        }
+                        callback(postsList)
+                    }
+                    .addOnFailureListener { exception ->
+
+                    }
+            }
+        }
+
+
 
     }
 }

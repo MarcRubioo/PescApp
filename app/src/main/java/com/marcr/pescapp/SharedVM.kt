@@ -1,13 +1,15 @@
 package com.marcr.pescapp
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class SharedVM : ViewModel() {
 
-    val user = MutableLiveData<String>()
+    private val _userSearch = MutableLiveData<String>()
+    val userSearch: LiveData<String> = _userSearch
 
-    fun userLoged(text: String) {
-        user.value = text
+    fun setUserSearch(email: String) {
+        _userSearch.value = email
     }
 }

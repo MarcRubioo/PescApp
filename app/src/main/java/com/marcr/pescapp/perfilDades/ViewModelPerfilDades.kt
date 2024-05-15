@@ -20,10 +20,10 @@ class ViewModelPerfilDades: ViewModel() {
         }
     }
 
-    fun modifyDataUser(context: Context, email: String, name: String, password: String?, age: String, callback: (Boolean) -> Unit) {
+    fun modifyDataUser(context: Context, email: String, name: String, password: String?, age: String, description: String, callback: (Boolean) -> Unit) {
         val image = imageProfile?.toString() ?: ""
 
-        val user = User(email, name, password ?: "", age, image)
+        val user = User(email, name, password ?: "", age, image, description)
         repository.modifyDataUser(user, imageProfile, context) { success ->
             callback(success)
         }

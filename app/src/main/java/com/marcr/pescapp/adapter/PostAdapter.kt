@@ -8,7 +8,7 @@ import com.marcr.pescapp.data.Post
 import com.marcr.pescapp.databinding.ItemPostBinding
 import com.marcr.pescapp.principalsPosts.principalPostsFragment
 
-class PostAdapter(private val context: Context, private val postList: List<Post>, private val listener: principalPostsFragment) : RecyclerView.Adapter<PostViewHolder>() {
+class PostAdapter(private val context: Context, private val postList: List<Post>) : RecyclerView.Adapter<PostViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
@@ -25,8 +25,5 @@ class PostAdapter(private val context: Context, private val postList: List<Post>
         val item = postList[position]
         holder.bind(item)
 
-        holder.itemView.setOnClickListener {
-            listener.onItemClick(position)
-        }
     }
 }

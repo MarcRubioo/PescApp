@@ -1,4 +1,4 @@
-package com.marcr.pescapp.perfil
+package com.marcr.pescapp.perfilSearch
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -8,7 +8,7 @@ import com.marcr.pescapp.data.Post
 import com.marcr.pescapp.data.User
 import com.marcr.pescapp.data.repository
 
-class ViewModelPerfil: ViewModel() {
+class ViewModelPerfilSearch: ViewModel() {
     fun getUserProfile(email: String, context: Context, callback: (User?) -> Unit) {
         repository.getUserData(email, context) { user ->
             callback(user)
@@ -18,10 +18,9 @@ class ViewModelPerfil: ViewModel() {
     private var _postProfile= MutableLiveData<MutableList<Post>>()
     val postProfile : LiveData<MutableList<Post>> = _postProfile
 
-    fun getUserPosts() {
-        repository.getPostProfile { postProfileList ->
+    fun getUserPosts(email: String) {
+        repository.getPostProfileSearch(email) { postProfileList ->
             _postProfile.value = postProfileList.toMutableList()
         }
     }
-
 }

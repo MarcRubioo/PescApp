@@ -5,6 +5,7 @@
     <color name="naranja">#ff8201</color>
     <color name="azul">#01556d</color>
     <color name="select">#fedbd0</color>
+    <color name="gris">#CDCDCD</color>
 
     <color name="bottom_nav_background">#ff8201</color>
     <color name="bottom_nav_item">#FF000000</color>

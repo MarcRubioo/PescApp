@@ -25,7 +25,6 @@ import com.marcr.pescapp.databinding.FragmentAddPostBinding
 class AddPostFragment : Fragment() {
     private lateinit var binding: FragmentAddPostBinding
     private val viewModel: ViewModelAddPost by viewModels()
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
 
     private var imageUri: Uri? = null

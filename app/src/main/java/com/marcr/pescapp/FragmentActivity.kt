@@ -8,9 +8,6 @@ import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.marcr.pescapp.databinding.ActivityFragmentBinding
 
-enum class ProviderType{
-    BASIC
-}
 class FragmentActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var binding: ActivityFragmentBinding

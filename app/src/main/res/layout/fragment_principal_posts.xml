@@ -7,22 +7,36 @@
         android:layout_height="match_parent"
         tools:context=".principalsPosts.principalPostsFragment">
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="hello_principal_posts_fragment" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPosts"
             android:layout_width="match_parent"
-            android:layout_height="590dp"
+            android:layout_height="645dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView3"
-            app:layout_constraintHorizontal_bias="0.024"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageLogo" />
+
+        <ImageView
+            android:id="@+id/imageLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.496" />
+            app:srcCompat="@drawable/logoletras" />
+
+        <ImageView
+            android:id="@+id/imageBuscador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/imageLogo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/iconobuscador" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

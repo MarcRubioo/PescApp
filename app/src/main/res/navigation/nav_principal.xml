@@ -9,7 +9,14 @@
         android:id="@+id/principalPostsFragment2"
         android:name="com.marcr.pescapp.principalsPosts.principalPostsFragment"
         android:label="fragment_principal_posts"
-        tools:layout="@layout/fragment_principal_posts" />
+        tools:layout="@layout/fragment_principal_posts" >
+        <action
+            android:id="@+id/action_principalPostsFragment2_to_buscadorFragment"
+            app:destination="@id/buscadorFragment" />
+        <action
+            android:id="@+id/action_principalPostsFragment2_to_commentsPostFragment"
+            app:destination="@id/commentsPostFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addPostFragment2"
         android:name="com.marcr.pescapp.addPost.AddPostFragment"
@@ -36,5 +43,34 @@
         <action
             android:id="@+id/action_perfilDadesFragment_to_perfilFragment2"
             app:destination="@id/perfilFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/buscadorFragment"
+        android:name="com.marcr.pescapp.buscador.BuscadorFragment"
+        android:label="fragment_buscador"
+        tools:layout="@layout/fragment_buscador" >
+        <action
+            android:id="@+id/action_buscadorFragment_to_principalPostsFragment2"
+            app:destination="@id/principalPostsFragment2" />
+        <action
+            android:id="@+id/action_buscadorFragment_to_perfilSearchFragment"
+            app:destination="@id/perfilSearchFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/perfilSearchFragment"
+        android:name="com.marcr.pescapp.perfilSearch.PerfilSearchFragment"
+        android:label="PerfilSearchFragment" >
+        <action
+            android:id="@+id/action_perfilSearchFragment_to_buscadorFragment"
+            app:destination="@id/buscadorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsPostFragment"
+        android:name="com.marcr.pescapp.commnentsPost.CommentsPostFragment"
+        android:label="CommentsPostFragment" >
+        <action
+            android:id="@+id/action_commentsPostFragment_to_principalPostsFragment2"
+            app:destination="@id/principalPostsFragment2" />
     </fragment>
 </navigation>
