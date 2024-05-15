@@ -5,7 +5,7 @@ import com.bumptech.glide.Glide
 import com.marcr.pescapp.data.Post
 import com.marcr.pescapp.databinding.ItemPostBinding
 
-class PostViewHolder(private var binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
+class PostViewHolder(var binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
         binding.email.text = post.email
@@ -13,5 +13,6 @@ class PostViewHolder(private var binding: ItemPostBinding) : RecyclerView.ViewHo
         binding.site.text = post.sitePost
         Glide.with(binding.imagePost.context).load(post.imagePost).into(binding.imagePost)
         binding.title.text = post.titlePost
+        binding.numLikes.text = post.likes.size.toString()
     }
 }

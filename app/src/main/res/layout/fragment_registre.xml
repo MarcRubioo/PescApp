@@ -9,10 +9,20 @@
         tools:context=".registre.FragmentRegistre">
 
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/logotransparente"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
             android:id="@+id/editTextUser"
-            android:layout_width="212dp"
-            android:layout_height="0dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:background="@drawable/blue_border"
             android:ems="10"
             android:hint="Nombre"
@@ -21,14 +31,13 @@
             android:paddingStart="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <EditText
             android:id="@+id/editTextEmail2"
-            android:layout_width="212dp"
-            android:layout_height="0dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/blue_border"
             android:ems="10"
@@ -38,14 +47,13 @@
             android:paddingStart="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextUser" />
 
         <EditText
             android:id="@+id/editTextEdat"
-            android:layout_width="212dp"
-            android:layout_height="0dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/blue_border"
             android:ems="10"
@@ -55,14 +63,13 @@
             android:paddingStart="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextEmail2" />
 
         <EditText
             android:id="@+id/editTextPassword"
-            android:layout_width="212dp"
-            android:layout_height="0dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/blue_border"
             android:ems="10"
@@ -72,14 +79,13 @@
             android:paddingStart="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextEdat" />
 
         <EditText
             android:id="@+id/editTextConfirmPassword"
-            android:layout_width="212dp"
-            android:layout_height="0dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/blue_border"
             android:ems="10"
@@ -89,33 +95,23 @@
             android:paddingStart="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
         <Button
             android:id="@+id/btnLoginNext"
-            android:layout_width="212dp"
-            android:layout_height="0dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/naranja"
             android:text="Crear"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.515"
+            app:layout_constraintHorizontal_bias="0.504"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword"
+            app:layout_constraintVertical_bias="0.17" />
 
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="331dp"
-            android:layout_height="305dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/logotransparente"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.362"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

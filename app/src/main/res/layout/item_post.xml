@@ -79,29 +79,55 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.205"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+                    app:layout_constraintTop_toBottomOf="@+id/imgLike" />
 
                 <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/imgLike"
                     android:layout_marginTop="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.04"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imagePost"
-                    app:srcCompat="@drawable/likeicon" />
+                    app:srcCompat="@drawable/nolike" />
+
+
+                <TextView
+                    android:id="@+id/numLikes"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:text="numlikes"
+                    android:textSize="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.019"
+                    app:layout_constraintStart_toEndOf="@+id/imgLike"
+                    app:layout_constraintTop_toBottomOf="@+id/imagePost" />
 
                 <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="42dp"
-                    android:layout_height="36dp"
+                    android:id="@+id/imgComment"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginTop="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.044"
-                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    app:layout_constraintHorizontal_bias="0.085"
+                    app:layout_constraintStart_toEndOf="@+id/numLikes"
                     app:layout_constraintTop_toBottomOf="@+id/imagePost"
                     app:srcCompat="@drawable/comenticon" />
+
+                <TextView
+                    android:id="@+id/numComments"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:text="numComments"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.078"
+                    app:layout_constraintStart_toEndOf="@+id/imgComment"
+                    app:layout_constraintTop_toBottomOf="@+id/imagePost" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

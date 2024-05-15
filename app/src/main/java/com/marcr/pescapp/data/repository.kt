@@ -80,11 +80,13 @@ class repository {
                             storage.downloadUrl.addOnSuccessListener { uri ->
                                 db.collection("posts").add(
                                     hashMapOf(
+                                        "id" to post.id,
                                         "email" to post.email,
                                         "image" to uri.toString(),
                                         "title" to post.titlePost,
                                         "location" to post.sitePost,
-                                        "category" to post.categoryPost
+                                        "category" to post.categoryPost,
+                                        "likes" to post.likes
                                     )
                                 )
                                     .addOnSuccessListener {
@@ -212,28 +214,37 @@ class repository {
         }
 
         fun getAllPosts(callback: (List<Post>) -> Unit) {
-            GlobalScope.launch(Dispatchers.IO) {
-                val db = FirebaseFirestore.getInstance()
-                val postsList = mutableListOf<Post>()
-                db.collection("posts")
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        for (document in documents) {
-                            val post = Post(
-                                document.getString("email") ?: "",
-                                document.getString("image") ?: "",
-                                document.getString("title") ?: "",
-                                document.getString("location") ?: "",
-                                document.getString("category") ?: ""
-                            )
-                            postsList.add(post)
-                        }
-                        callback(postsList)
-                    }
-                    .addOnFailureListener { exception ->
+            val db = FirebaseFirestore.getInstance()
+            val postsList = mutableListOf<Post>()
 
+            db.collection("posts")
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        val id = document.getString("id") ?: ""
+                        val email = document.getString("email") ?: ""
+                        val imagePost = document.getString("image") ?: ""
+                        val titlePost = document.getString("title") ?: ""
+                        val sitePost = document.getString("location") ?: ""
+                        val categoryPost = document.getString("category") ?: ""
+                        val likes = document.get("likes") as? List<String> ?: listOf()
+
+                        val post = Post(
+                            id,
+                            email,
+                            imagePost,
+                            titlePost,
+                            sitePost,
+                            categoryPost,
+                            likes.toMutableList()
+                        )
+                        postsList.add(post)
                     }
-            }
+                    callback(postsList)
+                }
+                .addOnFailureListener { exception ->
+
+                }
         }
 
         fun getUsersSearch(userLoged: String, callback: (List<User>) -> Unit) {
@@ -277,64 +288,82 @@ class repository {
 
 
         fun getPostProfile(callback: (List<Post>) -> Unit) {
-            GlobalScope.launch(Dispatchers.IO) {
-                val db = FirebaseFirestore.getInstance()
-                val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+            val db = FirebaseFirestore.getInstance()
+            val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
 
-                if (currentUserEmail != null) {
-                    val postsList = mutableListOf<Post>()
+            if (currentUserEmail != null) {
+                val postsList = mutableListOf<Post>()
 
-                    db.collection("posts")
-                        .whereEqualTo("email", currentUserEmail)
-                        .get()
-                        .addOnSuccessListener { documents ->
-                            for (document in documents) {
-                                val post = Post(
-                                    document.getString("email") ?: "",
-                                    document.getString("image") ?: "",
-                                    document.getString("title") ?: "",
-                                    document.getString("location") ?: "",
-                                    document.getString("category") ?: ""
-                                )
-                                postsList.add(post)
-                            }
-                            callback(postsList)
+                db.collection("posts")
+                    .whereEqualTo("email", currentUserEmail)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val id = document.getString("id") ?: ""
+                            val email = document.getString("email") ?: ""
+                            val imagePost = document.getString("image") ?: ""
+                            val titlePost = document.getString("title") ?: ""
+                            val sitePost = document.getString("location") ?: ""
+                            val categoryPost = document.getString("category") ?: ""
+                            val likes = document.get("likes") as? List<String> ?: listOf()
+
+                            val post = Post(
+                                id,
+                                email,
+                                imagePost,
+                                titlePost,
+                                sitePost,
+                                categoryPost,
+                                likes.toMutableList()
+                            )
+                            postsList.add(post)
                         }
-                        .addOnFailureListener { exception ->
-                        }
-                }
+                        callback(postsList)
+                    }
+                    .addOnFailureListener { exception ->
+
+                    }
             }
         }
+
 
         fun getPostProfileSearch(email: String, callback: (List<Post>) -> Unit) {
-            GlobalScope.launch(Dispatchers.IO) {
-                val db = FirebaseFirestore.getInstance()
+            val db = FirebaseFirestore.getInstance()
 
-                if (email != null) {
-                    val postsList = mutableListOf<Post>()
+            if (email != null) {
+                val postsList = mutableListOf<Post>()
 
-                    db.collection("posts")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .addOnSuccessListener { documents ->
-                            for (document in documents) {
-                                val post = Post(
-                                    document.getString("email") ?: "",
-                                    document.getString("image") ?: "",
-                                    document.getString("title") ?: "",
-                                    document.getString("location") ?: "",
-                                    document.getString("category") ?: ""
-                                )
-                                postsList.add(post)
-                            }
-                            callback(postsList)
+                db.collection("posts")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val id = document.getString("id") ?: ""
+                            val email = document.getString("email") ?: ""
+                            val imagePost = document.getString("image") ?: ""
+                            val titlePost = document.getString("title") ?: ""
+                            val sitePost = document.getString("location") ?: ""
+                            val categoryPost = document.getString("category") ?: ""
+                            val likes = document.get("likes") as? List<String> ?: listOf()
+
+                            val post = Post(
+                                id,
+                                email,
+                                imagePost,
+                                titlePost,
+                                sitePost,
+                                categoryPost,
+                                likes.toMutableList()
+                            )
+                            postsList.add(post)
                         }
-                        .addOnFailureListener { exception ->
-
-                        }
-                }
+                        callback(postsList)
+                    }
+                    .addOnFailureListener { exception ->
+                    }
             }
         }
+
 
         fun addFollowerAndFollowing(
             emailToFollow: String,
@@ -420,6 +449,92 @@ class repository {
             }
         }
 
+        fun addLikeToPost(
+            idPost: String,
+            emailUserLoged: String,
+            callback: (Boolean) -> Unit
+        ) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
 
+                db.collection("posts")
+                    .whereEqualTo("id", idPost)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val postDocRef = db.collection("posts").document(document.id)
+                            postDocRef.update("likes", FieldValue.arrayUnion(emailUserLoged))
+                                .addOnSuccessListener {
+                                    callback(true)
+                                }
+                                .addOnFailureListener {
+                                    callback(false)
+                                }
+                        }
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+        }
+
+
+        fun removeLikeToPost(
+            idPost: String,
+            emailUserLoged: String,
+            callback: (Boolean) -> Unit
+        ) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("posts")
+                    .whereEqualTo("id", idPost) // Filtrar por el campo "id"
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val postDocRef = db.collection("posts").document(document.id)
+                            postDocRef.update("likes", FieldValue.arrayRemove(emailUserLoged))
+                                .addOnSuccessListener {
+                                    callback(true)
+                                }
+                                .addOnFailureListener {
+                                    callback(false)
+                                }
+                        }
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+        }
+
+        fun checkIfPostHaveFollowOfUserCurrent(
+            idPost: String,
+            emailUserLoged: String,
+            callback: (Boolean) -> Unit
+        ) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("posts")
+                    .whereEqualTo("id", idPost)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        var postFound = false
+                        for (document in documents) {
+                            val likes = document.get("likes") as? List<String>
+                            val haveLike = likes?.contains(emailUserLoged) ?: false
+                            if (haveLike) {
+                                postFound = true
+                                break
+                            }
+                        }
+                        callback(postFound)
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+        }
     }
 }

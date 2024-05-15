@@ -57,7 +57,7 @@ class AddPostFragment : Fragment() {
 
                 if (userLog != null) {
 
-                    viewModel.addPostViewModel(requireContext(), userLog.email.toString(), binding.editTextPublicaion.text.toString(), binding.editTextLugar.text.toString(), binding.spinnerCategory.selectedItem.toString()) { success ->
+                    viewModel.addPostViewModel(requireContext(), viewModel.generarCodigoAleatorio() ,userLog.email.toString(), binding.editTextPublicaion.text.toString(), binding.editTextLugar.text.toString(), binding.spinnerCategory.selectedItem.toString()) { success ->
                         if (success) {
                             Toast.makeText(requireContext(), "Post Creado!", Toast.LENGTH_SHORT).show()
                             findNavController().navigate(R.id.action_addPostFragment2_to_principalPostsFragment2)
