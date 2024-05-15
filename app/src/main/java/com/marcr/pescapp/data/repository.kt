@@ -6,81 +6,61 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.play.integrity.internal.i
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class repository {
 
     companion object {
         fun logUser(user: UserLog, context: Context, callback: (Boolean) -> Unit) {
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(user.email, user.password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        callback(true)
-                    } else {
-                        callback(false)
+            GlobalScope.launch(Dispatchers.IO) {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(user.email, user.password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            callback(true)
+                        } else {
+                            callback(false)
+                        }
                     }
-                }
+            }
         }
 
 
         fun registerUser(user: User, context: Context, callback: (Boolean) -> Unit) {
-            var imguri: String
-            val db = FirebaseFirestore.getInstance()
-            val storage = FirebaseStorage.getInstance()
-            storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
-                imguri = uri.toString()
+            GlobalScope.launch(Dispatchers.IO) {
+                var imguri: String
+                val db = FirebaseFirestore.getInstance()
+                val storage = FirebaseStorage.getInstance()
+                storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
+                    imguri = uri.toString()
 
-                if (imguri != null) {
-                    user.password?.let {
-                        FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.email, it)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    db.collection("users").document(user.email).set(
-                                        hashMapOf(
-                                            "name" to user.name,
-                                            "email" to user.email,
-                                            "password" to user.password,
-                                            "edat" to user.age,
-                                            "img" to imguri,
-                                            "description" to user.description,
-                                            "followers" to user.followers,
-                                            "following" to user.following
+                    if (imguri != null) {
+                        user.password?.let {
+                            FirebaseAuth.getInstance()
+                                .createUserWithEmailAndPassword(user.email, it)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        db.collection("users").document(user.email).set(
+                                            hashMapOf(
+                                                "name" to user.name,
+                                                "email" to user.email,
+                                                "password" to user.password,
+                                                "edat" to user.age,
+                                                "img" to imguri,
+                                                "description" to user.description,
+                                                "followers" to user.followersList,
+                                                "following" to user.followingList
+                                            )
                                         )
-                                    )
-                                    callback(true)
-                                } else {
-                                    callback(false)
-                                }
-                            }
-                    }
-                }
-            }
-        }
-
-        fun addPost(post: Post, uri: Uri?, context: Context, callback: (Boolean) -> Unit) {
-            val db = FirebaseFirestore.getInstance()
-            val storage = FirebaseStorage.getInstance().reference.child(post.email + "ImagePost")
-
-            uri?.let {
-                storage.putFile(it).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        storage.downloadUrl.addOnSuccessListener { uri ->
-                            db.collection("posts").add(
-                                hashMapOf(
-                                    "email" to post.email,
-                                    "image" to uri.toString(),
-                                    "title" to post.titlePost,
-                                    "location" to post.sitePost,
-                                    "category" to post.categoryPost
-                                )
-                            )
-                                .addOnSuccessListener {
-                                    callback(true)
-                                }
-                                .addOnFailureListener { e ->
-                                    callback(false)
+                                        callback(true)
+                                    } else {
+                                        callback(false)
+                                    }
                                 }
                         }
                     }
@@ -88,27 +68,25 @@ class repository {
             }
         }
 
-        fun modifyDataUser(user: User, uri: Uri?, context: Context, callback: (Boolean) -> Unit) {
-            val storage = FirebaseStorage.getInstance().reference.child(user.email + "Image")
+        fun addPost(post: Post, uri: Uri?, context: Context, callback: (Boolean) -> Unit) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                val storage =
+                    FirebaseStorage.getInstance().reference.child(post.email + "ImagePost")
 
-            if (uri != null) {
                 uri?.let {
                     storage.putFile(it).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             storage.downloadUrl.addOnSuccessListener { uri ->
-                                val userData =
+                                db.collection("posts").add(
                                     hashMapOf(
-                                        "img" to uri.toString(),
-                                        "description" to user.description,
-                                        "name" to user.name,
-                                        "edat" to user.age
+                                        "email" to post.email,
+                                        "image" to uri.toString(),
+                                        "title" to post.titlePost,
+                                        "location" to post.sitePost,
+                                        "category" to post.categoryPost
                                     )
-
-
-                                val db = FirebaseFirestore.getInstance()
-
-                                db.collection("users").document(user.email)
-                                    .update(userData as Map<String, Any>)
+                                )
                                     .addOnSuccessListener {
                                         callback(true)
                                     }
@@ -119,130 +97,125 @@ class repository {
                         }
                     }
                 }
-            } else {
-                val userData2 = hashMapOf(
-                    "name" to user.name,
-                    "edat" to user.age,
-                    "description" to user.description
-                )
-
-                val db = FirebaseFirestore.getInstance()
-
-                db.collection("users").document(user.email)
-                    .update(userData2 as Map<String, Any>)
-                    .addOnSuccessListener {
-                        callback(true)
-                    }
-                    .addOnFailureListener { e ->
-                        callback(false)
-                    }
             }
-
         }
 
-        fun deleteUserData(email: String, context: Context, callback: (Boolean) -> Unit) {
-            val auth = FirebaseAuth.getInstance()
-            val db = FirebaseFirestore.getInstance()
+        fun modifyDataUser(user: User, uri: Uri?, context: Context, callback: (Boolean) -> Unit) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val storage = FirebaseStorage.getInstance().reference.child(user.email + "Image")
+
+                if (uri != null) {
+                    uri?.let {
+                        storage.putFile(it).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                storage.downloadUrl.addOnSuccessListener { uri ->
+                                    val userData =
+                                        hashMapOf(
+                                            "img" to uri.toString(),
+                                            "description" to user.description,
+                                            "name" to user.name,
+                                            "edat" to user.age
+                                        )
 
 
-            auth.currentUser?.delete()?.addOnCompleteListener { authTask ->
-                if (authTask.isSuccessful) {
-                    db.collection("users").document(email)
-                        .delete()
+                                    val db = FirebaseFirestore.getInstance()
+
+                                    db.collection("users").document(user.email)
+                                        .update(userData as Map<String, Any>)
+                                        .addOnSuccessListener {
+                                            callback(true)
+                                        }
+                                        .addOnFailureListener { e ->
+                                            callback(false)
+                                        }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    val userData2 = hashMapOf(
+                        "name" to user.name,
+                        "edat" to user.age,
+                        "description" to user.description
+                    )
+
+                    val db = FirebaseFirestore.getInstance()
+
+                    db.collection("users").document(user.email)
+                        .update(userData2 as Map<String, Any>)
                         .addOnSuccessListener {
                             callback(true)
                         }
                         .addOnFailureListener { e ->
                             callback(false)
                         }
-                } else {
-                    callback(false)
+                }
+            }
+        }
+
+        fun deleteUserData(email: String, context: Context, callback: (Boolean) -> Unit) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val auth = FirebaseAuth.getInstance()
+                val db = FirebaseFirestore.getInstance()
+
+
+                auth.currentUser?.delete()?.addOnCompleteListener { authTask ->
+                    if (authTask.isSuccessful) {
+                        db.collection("users").document(email)
+                            .delete()
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener { e ->
+                                callback(false)
+                            }
+                    } else {
+                        callback(false)
+                    }
                 }
             }
         }
 
         fun getUserData(email: String, context: Context, callback: (User?) -> Unit) {
-            val db = FirebaseFirestore.getInstance()
-            db.collection("users").document(email).get()
-                .addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        val userEmail = document.getString("email") ?: ""
-                        val name = document.getString("name") ?: ""
-                        val age = document.getString("edat") ?: ""
-                        val img = document.getString("img") ?: ""
-                        val desc = document.getString("description") ?: ""
-                        val followers = document.getString("followers") ?: ""
-                        val following = document.getString("following") ?: ""
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                db.collection("users").document(email).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            val userEmail = document.getString("email") ?: ""
+                            val name = document.getString("name") ?: ""
+                            val age = document.getString("edat") ?: ""
+                            val img = document.getString("img") ?: ""
+                            val desc = document.getString("description") ?: ""
+                            val followers = document.get("followers") as? List<String> ?: listOf()
+                            val following = document.get("following") as? List<String> ?: listOf()
 
-                        val user = User(userEmail, name, "", age, img,desc,followers,following)
-                        callback(user)
-                    } else {
+                            val user = User(
+                                userEmail,
+                                name,
+                                "",
+                                age,
+                                img,
+                                desc,
+                                followers.toMutableList(),
+                                following.toMutableList()
+                            )
+                            callback(user)
+                        } else {
+                            callback(null)
+                        }
+                    }
+                    .addOnFailureListener { e ->
                         callback(null)
                     }
-                }
-                .addOnFailureListener { e ->
-                    callback(null)
-                }
+            }
         }
 
         fun getAllPosts(callback: (List<Post>) -> Unit) {
-            val db = FirebaseFirestore.getInstance()
-            val postsList = mutableListOf<Post>()
-            db.collection("posts")
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        val post = Post(
-                            document.getString("email") ?: "",
-                            document.getString("image") ?: "",
-                            document.getString("title") ?: "",
-                            document.getString("location") ?: "",
-                            document.getString("category") ?: ""
-                        )
-                        postsList.add(post)
-                    }
-                    callback(postsList)
-                }
-                .addOnFailureListener { exception ->
-                    // Manejar el error aquí
-                }
-        }
-
-        fun getUsersSearch(callback: (List<User>) -> Unit) {
-            val db = FirebaseFirestore.getInstance()
-            val userSearchList = mutableListOf<User>()
-            db.collection("users")
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        val user = User(
-                            document.getString("email") ?: "",
-                            document.getString("name") ?: "",
-                            document.getString("password") ?: "",
-                            document.getString("edat") ?: "",
-                            document.getString("img") ?: "",
-                            document.getString("description") ?: "",
-                            document.getString("followers") ?: "",
-                            document.getString("following") ?: "",
-                        )
-                        userSearchList.add(user)
-                    }
-                    callback(userSearchList)
-                }
-                .addOnFailureListener { exception ->
-
-                }
-        }
-
-        fun getPostProfile(callback: (List<Post>) -> Unit) {
-            val db = FirebaseFirestore.getInstance()
-            val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
-
-            if (currentUserEmail != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
                 val postsList = mutableListOf<Post>()
-
                 db.collection("posts")
-                    .whereEqualTo("email", currentUserEmail)
                     .get()
                     .addOnSuccessListener { documents ->
                         for (document in documents) {
@@ -258,39 +231,194 @@ class repository {
                         callback(postsList)
                     }
                     .addOnFailureListener { exception ->
-                        // Manejar el error aquí
+
                     }
+            }
+        }
+
+        fun getUsersSearch(userLoged: String, callback: (List<User>) -> Unit) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                val userSearchList = mutableListOf<User>()
+                db.collection("users")
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            val email = document.getString("email") ?: ""
+                            val name = document.getString("name") ?: ""
+                            val password = document.getString("password") ?: ""
+                            val age = document.getString("edat") ?: ""
+                            val img = document.getString("img") ?: ""
+                            val desc = document.getString("description") ?: ""
+                            val followers = document.get("followers") as? List<String> ?: listOf()
+                            val following = document.get("following") as? List<String> ?: listOf()
+
+                            val user = User(
+                                email,
+                                name,
+                                password,
+                                age,
+                                img,
+                                desc,
+                                followers.toMutableList(),
+                                following.toMutableList()
+                            )
+                            if (email != userLoged) {
+                                userSearchList.add(user)
+                            }
+                        }
+                        callback(userSearchList)
+                    }
+                    .addOnFailureListener { exception ->
+
+                    }
+            }
+        }
+
+
+        fun getPostProfile(callback: (List<Post>) -> Unit) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+
+                if (currentUserEmail != null) {
+                    val postsList = mutableListOf<Post>()
+
+                    db.collection("posts")
+                        .whereEqualTo("email", currentUserEmail)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                val post = Post(
+                                    document.getString("email") ?: "",
+                                    document.getString("image") ?: "",
+                                    document.getString("title") ?: "",
+                                    document.getString("location") ?: "",
+                                    document.getString("category") ?: ""
+                                )
+                                postsList.add(post)
+                            }
+                            callback(postsList)
+                        }
+                        .addOnFailureListener { exception ->
+                        }
+                }
             }
         }
 
         fun getPostProfileSearch(email: String, callback: (List<Post>) -> Unit) {
-            val db = FirebaseFirestore.getInstance()
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
 
-            if (email != null) {
-                val postsList = mutableListOf<Post>()
+                if (email != null) {
+                    val postsList = mutableListOf<Post>()
 
-                db.collection("posts")
-                    .whereEqualTo("email", email)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        for (document in documents) {
-                            val post = Post(
-                                document.getString("email") ?: "",
-                                document.getString("image") ?: "",
-                                document.getString("title") ?: "",
-                                document.getString("location") ?: "",
-                                document.getString("category") ?: ""
-                            )
-                            postsList.add(post)
+                    db.collection("posts")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                val post = Post(
+                                    document.getString("email") ?: "",
+                                    document.getString("image") ?: "",
+                                    document.getString("title") ?: "",
+                                    document.getString("location") ?: "",
+                                    document.getString("category") ?: ""
+                                )
+                                postsList.add(post)
+                            }
+                            callback(postsList)
                         }
-                        callback(postsList)
-                    }
-                    .addOnFailureListener { exception ->
+                        .addOnFailureListener { exception ->
 
+                        }
+                }
+            }
+        }
+
+        fun addFollowerAndFollowing(
+            emailToFollow: String,
+            emailUserLoged: String,
+            callback: (Boolean) -> Unit
+        ) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("users")
+                    .document(emailToFollow)
+                    .update("followers", FieldValue.arrayUnion(emailUserLoged))
+                    .addOnSuccessListener {
+
+                        db.collection("users")
+                            .document(emailUserLoged)
+                            .update("following", FieldValue.arrayUnion(emailToFollow))
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener {
+                                callback(false)
+                            }
+                    }
+                    .addOnFailureListener {
+                        callback(false)
                     }
             }
         }
 
+        fun removeFollowerAndFollowing(
+            emailToUnfollow: String,
+            emailUserLoged: String,
+            callback: (Boolean) -> Unit
+        ) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("users")
+                    .document(emailToUnfollow)
+                    .update("followers", FieldValue.arrayRemove(emailUserLoged))
+                    .addOnSuccessListener {
+
+                        db.collection("users")
+                            .document(emailUserLoged)
+                            .update("following", FieldValue.arrayRemove(emailToUnfollow))
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener {
+                                callback(false)
+                            }
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+        }
+
+        fun checkIfUserIsFollower(
+            emailToUnfollow: String,
+            emailUserLoged: String,
+            callback: (Boolean) -> Unit
+        ) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+
+                db.collection("users")
+                    .document(emailToUnfollow)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            val followers = document.get("followers") as? List<String>
+                            val isFollower = followers?.contains(emailUserLoged) ?: false
+                            callback(isFollower)
+                        } else {
+                            callback(false)
+                        }
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+        }
 
 
     }

@@ -11,8 +11,8 @@ class ViewModelBuscador: ViewModel() {
     private var _usersSearch= MutableLiveData<MutableList<User>>()
     val usersSearch : LiveData<MutableList<User>> = _usersSearch
 
-    fun getUserSearch() {
-        repository.getUsersSearch { userSearchList ->
+    fun getUserSearch(emailUserLoged: String) {
+        repository.getUsersSearch(emailUserLoged) { userSearchList ->
             _usersSearch.value = userSearchList.toMutableList()
         }
     }

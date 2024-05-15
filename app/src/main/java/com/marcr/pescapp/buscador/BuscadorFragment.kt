@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.marcr.pescapp.R
 import com.marcr.pescapp.SharedVM
 import com.marcr.pescapp.adapter.UserSearchAdapter
@@ -18,13 +19,14 @@ class BuscadorFragment : Fragment() {
     private lateinit var binding: FragmentBuscadorBinding
     private val viewModel: ViewModelBuscador by viewModels()
     private val sharedVM: SharedVM by activityViewModels()
+    private lateinit var auth: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentBuscadorBinding.inflate(inflater)
-
+        auth = FirebaseAuth.getInstance()
 
 
         binding.imageGoBack.setOnClickListener{
@@ -36,7 +38,7 @@ class BuscadorFragment : Fragment() {
         binding.recyclerUserSearch.layoutManager = manager
 
 
-        viewModel.getUserSearch()
+        viewModel.getUserSearch(auth.currentUser?.email.toString())
 
         viewModel.usersSearch.observe(viewLifecycleOwner){llistaUserSearch->
             binding.recyclerUserSearch.adapter = UserSearchAdapter(requireContext(), llistaUserSearch, this)

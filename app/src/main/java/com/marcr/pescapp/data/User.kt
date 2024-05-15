@@ -6,5 +6,7 @@ class User (val email: String,
             val age: String,
             val img: String = "",
             val description: String="",
-            val followers: String = "0",
-            val following: String="0")
+            val followersList: MutableList<String> = mutableListOf<String>(),
+            val followingList: MutableList<String> = mutableListOf<String>()
+
+)

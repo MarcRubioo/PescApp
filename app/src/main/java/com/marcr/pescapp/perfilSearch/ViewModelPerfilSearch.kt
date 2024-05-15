@@ -1,6 +1,8 @@
 package com.marcr.pescapp.perfilSearch
 
 import android.content.Context
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,4 +25,32 @@ class ViewModelPerfilSearch: ViewModel() {
             _postProfile.value = postProfileList.toMutableList()
         }
     }
+
+    private val _followResult = MutableLiveData<Boolean>()
+    val followResult: LiveData<Boolean> = _followResult
+
+    fun followUser(emailToFollow: String, emailUserLoged: String) {
+        repository.addFollowerAndFollowing(emailToFollow, emailUserLoged) { success ->
+            _followResult.postValue(success)
+        }
+    }
+
+    private val _unfollowResult = MutableLiveData<Boolean>()
+    val unfollowResult: LiveData<Boolean> = _unfollowResult
+
+    fun unfollowUser(emailToFollow: String, emailUserLoged: String) {
+        repository.removeFollowerAndFollowing(emailToFollow, emailUserLoged) { success ->
+            _unfollowResult.postValue(success)
+        }
+    }
+
+    private val _isFollower = MutableLiveData<Boolean>()
+    val isFollower: LiveData<Boolean> = _isFollower
+    fun checkIfUserIsFollower(emailToCheck: String, emailUserLoged: String) {
+        repository.checkIfUserIsFollower(emailToCheck, emailUserLoged) { isFollower ->
+            _isFollower.postValue(isFollower)
+        }
+    }
+
+
 }

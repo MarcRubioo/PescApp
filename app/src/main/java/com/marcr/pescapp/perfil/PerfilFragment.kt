@@ -40,8 +40,8 @@ class PerfilFragment : Fragment() {
                 user?.let {
                     binding.textViewName.setText(user.name)
                     binding.textViewDescription.setText(user.description)
-                    binding.textViewFollowers.setText("Seguidores: "+user.followers)
-                    binding.textViewFollowing.setText("Seguiendo: "+user.following)
+                    binding.textViewFollowers.setText("Seguidores: "+user.followersList.size)
+                    binding.textViewFollowing.setText("Seguiendo: "+user.followingList.size)
 
                     Glide.with(requireContext())
                         .load(user.img)

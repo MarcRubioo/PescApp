@@ -44,6 +44,22 @@ class PerfilSearchFragment : Fragment() {
             }
         }
 
+        viewModel.followResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Seguiendo", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "No lo pudistes seguir", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.unfollowResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Dejando de seguir", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "No lo pudistes dejar de seguir", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         auth = FirebaseAuth.getInstance()
 
         sharedVM.userSearch.observe(viewLifecycleOwner) { emailUserSearch ->
@@ -53,12 +69,31 @@ class PerfilSearchFragment : Fragment() {
                     user?.let {
                         binding.textViewName.text = user.name
                         binding.textViewDescription.text = user.description
-                        binding.textViewFollowers.text = "Seguidores: " + user.followers
-                        binding.textViewFollowing.text = "Siguiendo: " + user.following
+                        binding.textViewFollowers.text = "Seguidores: " + user.followersList.size
+                        binding.textViewFollowing.text = "Siguiendo: " + user.followingList.size
 
                         Glide.with(requireContext())
                             .load(user.img)
                             .into(binding.imageProfile)
+
+                        viewModel.checkIfUserIsFollower(user.email, auth.currentUser?.email.toString())
+
+                        viewModel.isFollower.observe(viewLifecycleOwner) { isFollower ->
+                            if (isFollower) {
+                                binding.btnseguir.setText("Seguiendo")
+                                binding.btnseguir.setOnClickListener{
+                                    viewModel.unfollowUser(user.email, auth.currentUser?.email.toString())
+                                }
+                            } else {
+                                binding.btnseguir.setText("Seguir")
+                                binding.btnseguir.setOnClickListener{
+                                    viewModel.followUser(user.email, auth.currentUser?.email.toString())
+                                }
+                            }
+                        }
+
+
+
                     } ?: run {
                         Toast.makeText(binding.root.context, "Documento no encontrado", Toast.LENGTH_SHORT).show()
                     }
@@ -66,9 +101,7 @@ class PerfilSearchFragment : Fragment() {
             }
         }
 
-        binding.btnseguir.setOnClickListener{
-            println("Valor shared coger: "+sharedVM.userSearch.value.toString())
-        }
+
 
         val manager = LinearLayoutManager(requireContext())
         binding.recyclerPostProfile.layoutManager = manager
