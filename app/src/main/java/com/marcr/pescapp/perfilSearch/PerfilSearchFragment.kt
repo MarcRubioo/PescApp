@@ -1,5 +1,6 @@
 package com.marcr.pescapp.perfilSearch
 
+import ViewModelPerfilSearch
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ class PerfilSearchFragment : Fragment() {
     private val viewModel: ViewModelPerfilSearch by viewModels()
     private lateinit var auth: FirebaseAuth
     private val sharedVM: SharedVM by activityViewModels()
+    private var emailUserSearch: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,41 +31,18 @@ class PerfilSearchFragment : Fragment() {
     ): View? {
         binding = FragmentPerfilSearchBinding.inflate(inflater)
 
-        binding.imageGoBack.setOnClickListener{
+        binding.imageGoBack.setOnClickListener {
             findNavController().navigate(R.id.action_perfilSearchFragment_to_buscadorFragment, null)
-        }
-
-
-        var emailUserSearch: String? = null
-
-        sharedVM.userSearch.observe(viewLifecycleOwner) { emailUserSearchValue ->
-            emailUserSearch = emailUserSearchValue
-            emailUserSearchValue?.let { email ->
-                println("hola $email")
-
-            }
-        }
-
-        viewModel.followResult.observe(viewLifecycleOwner) { success ->
-            if (success) {
-                Toast.makeText(requireContext(), "Seguiendo", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "No lo pudistes seguir", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        viewModel.unfollowResult.observe(viewLifecycleOwner) { success ->
-            if (success) {
-                Toast.makeText(requireContext(), "Dejando de seguir", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "No lo pudistes dejar de seguir", Toast.LENGTH_SHORT).show()
-            }
         }
 
         auth = FirebaseAuth.getInstance()
 
+        val manager = LinearLayoutManager(requireContext())
+        binding.recyclerPostProfile.layoutManager = manager
+
         sharedVM.userSearch.observe(viewLifecycleOwner) { emailUserSearch ->
             emailUserSearch?.let { email ->
+                this.emailUserSearch = email
                 println("hola $email")
                 viewModel.getUserProfile(email, requireContext()) { user ->
                     user?.let {
@@ -79,20 +58,24 @@ class PerfilSearchFragment : Fragment() {
                         viewModel.checkIfUserIsFollower(user.email, auth.currentUser?.email.toString())
 
                         viewModel.isFollower.observe(viewLifecycleOwner) { isFollower ->
-                            if (isFollower) {
-                                binding.btnseguir.setText("Seguiendo")
-                                binding.btnseguir.setOnClickListener{
-                                    viewModel.unfollowUser(user.email, auth.currentUser?.email.toString())
-                                }
-                            } else {
-                                binding.btnseguir.setText("Seguir")
-                                binding.btnseguir.setOnClickListener{
-                                    viewModel.followUser(user.email, auth.currentUser?.email.toString())
+                            if (isFollower != null && emailUserSearch != null) {
+                                if (isFollower) {
+                                    binding.btnseguir.text = "Siguiendo"
+                                    binding.btnseguir.setOnClickListener {
+                                        viewModel.unfollowUser(emailUserSearch!!, auth.currentUser?.email.toString())
+                                        binding.textViewFollowers.text = "Siguidores: " + (user.followersList.size.toInt()).toString()
+                                        viewModel.checkIfUserIsFollower(user.email, auth.currentUser?.email.toString())
+                                    }
+                                } else {
+                                    binding.btnseguir.text = "Seguir"
+                                    binding.btnseguir.setOnClickListener {
+                                        viewModel.followUser(emailUserSearch!!, auth.currentUser?.email.toString())
+                                        binding.textViewFollowers.text = "Siguidores: " + (user.followersList.size.toInt()+1).toString()
+                                        viewModel.checkIfUserIsFollower(user.email, auth.currentUser?.email.toString())
+                                    }
                                 }
                             }
                         }
-
-
 
                     } ?: run {
                         Toast.makeText(binding.root.context, "Documento no encontrado", Toast.LENGTH_SHORT).show()
@@ -101,15 +84,30 @@ class PerfilSearchFragment : Fragment() {
             }
         }
 
-
-
-        val manager = LinearLayoutManager(requireContext())
-        binding.recyclerPostProfile.layoutManager = manager
-
         sharedVM.userSearch.value?.let { emailUserSearch ->
             viewModel.getUserPosts(emailUserSearch)
             viewModel.postProfile.observe(viewLifecycleOwner) { llistaUserPosts ->
                 binding.recyclerPostProfile.adapter = PostsProfileAdapter(requireContext(), llistaUserPosts)
+            }
+        }
+
+
+
+        viewModel.followResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Siguiendo", Toast.LENGTH_SHORT).show()
+                binding.btnseguir.text = "Siguiendo"
+            } else {
+                Toast.makeText(requireContext(), "No pudiste seguir", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.unfollowResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Dejando de seguir", Toast.LENGTH_SHORT).show()
+                binding.btnseguir.text = "Seguir"
+            } else {
+                Toast.makeText(requireContext(), "No pudiste dejar de seguir", Toast.LENGTH_SHORT).show()
             }
         }
 

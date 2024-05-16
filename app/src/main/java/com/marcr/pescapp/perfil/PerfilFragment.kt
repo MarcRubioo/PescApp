@@ -24,45 +24,40 @@ class PerfilFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPerfilBinding.inflate(inflater)
-        // Inflate the layout for this fragment
+        binding = FragmentPerfilBinding.inflate(inflater, container, false)
 
-        binding.editTextEdit.setOnClickListener{
+        binding.editTextEdit.setOnClickListener {
             findNavController().navigate(R.id.action_perfilFragment2_to_perfilDadesFragment, null)
         }
 
         auth = FirebaseAuth.getInstance()
-        var userLog = auth.currentUser
+        val userLog = auth.currentUser
 
-
-        if (userLog != null) {
-            viewModel.getUserProfile(userLog.email!!, requireContext()) { user ->
+        userLog?.email?.let { email ->
+            viewModel.getUserProfile(email, requireContext()) { user ->
                 user?.let {
-                    binding.textViewName.setText(user.name)
-                    binding.textViewDescription.setText(user.description)
-                    binding.textViewFollowers.setText("Seguidores: "+user.followersList.size)
-                    binding.textViewFollowing.setText("Seguiendo: "+user.followingList.size)
+                    binding.textViewName.text = user.name
+                    binding.textViewDescription.text = user.description
+                    binding.textViewFollowers.text = "Seguidores: " + user.followersList.size
+                    binding.textViewFollowing.text = "Seguiendo: " + user.followingList.size
 
                     Glide.with(requireContext())
                         .load(user.img)
                         .into(binding.imageProfile)
                 } ?: run {
-                    Toast.makeText(binding.root.context, "Documento no encontrado ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(binding.root.context, "Documento no encontrado", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         val manager = LinearLayoutManager(requireContext())
-
         binding.recyclerPostProfile.layoutManager = manager
-
 
         viewModel.getUserPosts()
 
-        viewModel.postProfile.observe(viewLifecycleOwner){llistaUserPosts->
+        viewModel.postProfile.observe(viewLifecycleOwner) { llistaUserPosts ->
             binding.recyclerPostProfile.adapter = PostsProfileAdapter(requireContext(), llistaUserPosts)
         }
-
 
         return binding.root
     }

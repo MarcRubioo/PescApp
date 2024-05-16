@@ -6,33 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.marcr.pescapp.R
-import com.marcr.pescapp.SharedVM
 import com.marcr.pescapp.adapter.PostAdapter
+import com.marcr.pescapp.data.Post
 import com.marcr.pescapp.databinding.FragmentPrincipalPostsBinding
 
 class principalPostsFragment : Fragment() {
     private lateinit var binding: FragmentPrincipalPostsBinding
     private val viewModel: ViewModelPrincipalPosts by viewModels()
     private lateinit var auth: FirebaseAuth
+    private lateinit var adapter: PostAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = FragmentPrincipalPostsBinding.inflate(inflater)
-
         auth = FirebaseAuth.getInstance()
-
         val manager = LinearLayoutManager(requireContext())
-
         binding.recyclerPosts.layoutManager = manager
 
         binding.imageBuscador.setOnClickListener {
@@ -40,29 +35,21 @@ class principalPostsFragment : Fragment() {
         }
 
         viewModel.getPosts()
-
-        viewModel.posts.observe(viewLifecycleOwner){llistaPost->
-            binding.recyclerPosts.adapter = PostAdapter(requireContext(), llistaPost, this)
+        viewModel.posts.observe(viewLifecycleOwner) { llistaPost ->
+            adapter = PostAdapter(requireContext(), llistaPost.toMutableList(), this, auth.currentUser?.email.toString())
+            binding.recyclerPosts.adapter = adapter
         }
 
-
+        viewModel.likeResult.observe(viewLifecycleOwner) { (post, position) ->
+            if (post != null && position != null) {
+                adapter.updatePost(position, post)
+            }
+        }
 
         return binding.root
     }
 
-    fun onLikeClick(id: String) {
-        viewModel.checkIfIsLike(id, auth.currentUser?.email.toString())
-        Toast.makeText(binding.root.context, "Like", Toast.LENGTH_SHORT).show()
-
-        viewModel.isLike.observe(viewLifecycleOwner) { isLike ->
-            if (isLike) {
-                viewModel.RemoveLike(id, auth.currentUser?.email.toString())
-                Toast.makeText(binding.root.context, "TieneLike", Toast.LENGTH_SHORT).show()
-            } else {
-                viewModel.AddLike(id, auth.currentUser?.email.toString())
-                Toast.makeText(binding.root.context, "NoLike", Toast.LENGTH_SHORT).show()
-
-            }
-        }
+    fun onLikeClick(postId: String, position: Int) {
+        viewModel.toggleLike(postId, auth.currentUser?.email.toString(), position)
     }
 }

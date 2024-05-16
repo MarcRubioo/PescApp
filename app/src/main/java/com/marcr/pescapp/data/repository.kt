@@ -488,7 +488,7 @@ class repository {
                 val db = FirebaseFirestore.getInstance()
 
                 db.collection("posts")
-                    .whereEqualTo("id", idPost) // Filtrar por el campo "id"
+                    .whereEqualTo("id", idPost)
                     .get()
                     .addOnSuccessListener { documents ->
                         for (document in documents) {
@@ -508,33 +508,5 @@ class repository {
             }
         }
 
-        fun checkIfPostHaveFollowOfUserCurrent(
-            idPost: String,
-            emailUserLoged: String,
-            callback: (Boolean) -> Unit
-        ) {
-            GlobalScope.launch(Dispatchers.IO) {
-                val db = FirebaseFirestore.getInstance()
-
-                db.collection("posts")
-                    .whereEqualTo("id", idPost)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        var postFound = false
-                        for (document in documents) {
-                            val likes = document.get("likes") as? List<String>
-                            val haveLike = likes?.contains(emailUserLoged) ?: false
-                            if (haveLike) {
-                                postFound = true
-                                break
-                            }
-                        }
-                        callback(postFound)
-                    }
-                    .addOnFailureListener {
-                        callback(false)
-                    }
-            }
-        }
     }
 }

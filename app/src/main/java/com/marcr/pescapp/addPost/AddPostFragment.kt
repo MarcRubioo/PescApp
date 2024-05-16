@@ -1,10 +1,7 @@
 package com.marcr.pescapp.addPost
 
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.marcr.pescapp.R
-import com.marcr.pescapp.SharedVM
 import com.marcr.pescapp.databinding.FragmentAddPostBinding
 
 
@@ -52,6 +45,7 @@ class AddPostFragment : Fragment() {
 
         binding.btnAddPost.setOnClickListener {
             if (binding.editTextPublicaion.text.isNotBlank()
+                && imageUri != null
                 && binding.editTextLugar.text.isNotEmpty()
                 && binding.spinnerCategory.selectedItem != "Categoria") {
 
@@ -67,7 +61,7 @@ class AddPostFragment : Fragment() {
                     }
                 }
             } else {
-                Toast.makeText(binding.root.context, "Problemas al crear el Pots ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(binding.root.context, "Rellena todo los campos ", Toast.LENGTH_SHORT).show()
             }
         }
 
