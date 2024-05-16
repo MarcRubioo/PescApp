@@ -86,7 +86,8 @@ class repository {
                                         "title" to post.titlePost,
                                         "location" to post.sitePost,
                                         "category" to post.categoryPost,
-                                        "likes" to post.likes
+                                        "likes" to post.likes,
+                                        "comments" to post.comments
                                     )
                                 )
                                     .addOnSuccessListener {
@@ -228,6 +229,7 @@ class repository {
                         val sitePost = document.getString("location") ?: ""
                         val categoryPost = document.getString("category") ?: ""
                         val likes = document.get("likes") as? List<String> ?: listOf()
+                        val comments = document.get("comments") as? List<Comment> ?: listOf()
 
                         val post = Post(
                             id,
@@ -236,7 +238,8 @@ class repository {
                             titlePost,
                             sitePost,
                             categoryPost,
-                            likes.toMutableList()
+                            likes.toMutableList(),
+                            comments.toMutableList()
                         )
                         postsList.add(post)
                     }
@@ -503,6 +506,78 @@ class repository {
                         }
                     }
                     .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+        }
+
+        fun getCommentsByPostId(postId: String, callback: (List<Comment>) -> Unit) {
+            val db = FirebaseFirestore.getInstance()
+            val postsCollection = db.collection("posts")
+
+            postsCollection.whereEqualTo("id", postId).get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val documentSnapshot = querySnapshot.documents[0]
+                        val postRef = documentSnapshot.reference
+
+                        postRef.get().addOnSuccessListener { document ->
+                            if (document.exists()) {
+                                val comments = document.get("comments") as? List<Map<String, String>> ?: emptyList()
+                                val commentList = comments.map {
+                                    Comment(it["email"] ?: "", it["description"] ?: "")
+                                }
+                                callback(commentList)
+                            } else {
+                                callback(emptyList())
+                            }
+                        }.addOnFailureListener {
+                            callback(emptyList())
+                        }
+                    } else {
+                        callback(emptyList())
+                    }
+                }.addOnFailureListener {
+                    callback(emptyList())
+                }
+        }
+
+
+        fun addComment(postId: String, comment: Comment, callback: (Boolean) -> Unit) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                val postsCollection = db.collection("posts")
+
+                postsCollection.whereEqualTo("id", postId).get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty) {
+                            val documentSnapshot = querySnapshot.documents[0]
+                            val postRef = documentSnapshot.reference
+
+                            db.runTransaction { transaction ->
+                                val snapshot = transaction.get(postRef)
+
+                                if (snapshot.exists()) {
+                                    val comments =
+                                        snapshot.get("comments") as? MutableList<Map<String, String>>
+                                            ?: mutableListOf()
+
+                                    comments.add(comment.toMap())
+
+                                    transaction.update(postRef, "comments", comments)
+                                    true
+                                } else {
+                                    false
+                                }
+                            }.addOnSuccessListener {
+                                callback(true)
+                            }.addOnFailureListener {
+                                callback(false)
+                            }
+                        } else {
+                            callback(false)
+                        }
+                    }.addOnFailureListener {
                         callback(false)
                     }
             }

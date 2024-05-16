@@ -13,4 +13,11 @@ class SharedVM : ViewModel() {
         _userSearch.value = email
     }
 
+    private val _idPost = MutableLiveData<String>()
+    val idPost: LiveData<String> = _idPost
+
+    fun setIdPost(email: String) {
+        _idPost.value = email
+    }
+
 }

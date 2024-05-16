@@ -8,4 +8,5 @@ data class Post(
     val sitePost: String,
     val categoryPost: String,
     val likes: MutableList<String> = mutableListOf<String>(),
+    val comments: MutableList<Comment> = mutableListOf<Comment>(),
 )

@@ -8,11 +8,23 @@
         android:layout_height="match_parent"
         tools:context=".login.FragmentLogin">
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/logotransparente"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:layout_marginBottom="32dp" />
+
         <EditText
             android:id="@+id/editTextUser"
-            android:layout_width="214dp"
+            android:layout_width="300dp"
             android:layout_height="48dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:background="@drawable/blue_border"
             android:ems="10"
             android:hint="Correo del usuario"
@@ -20,15 +32,17 @@
             android:minHeight="48dp"
             android:paddingStart="8dp"
             android:textSize="14sp"
+            android:layout_marginTop="50dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.441"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <EditText
             android:id="@+id/editTextPassword"
-            android:layout_width="212dp"
+            android:layout_width="300dp"
             android:layout_height="48dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/blue_border"
             android:ems="10"
@@ -38,7 +52,6 @@
             android:paddingStart="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.437"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextUser" />
 
@@ -49,8 +62,9 @@
             android:layout_marginTop="28dp"
             android:text="¿No tienes cuenta? Crear "
             android:textColor="@color/azul"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.346"
+            android:layout_marginLeft="50dp"
+            app:layout_constraintEnd_toStartOf="@+id/textViewCrearCompteBTN"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
@@ -58,38 +72,25 @@
             android:id="@+id/textViewCrearCompteBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="40dp"
             android:layout_marginTop="28dp"
-            android:layout_marginEnd="92dp"
             android:text="cuenta"
             android:textColor="@color/naranja"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/textViewCrearCompte"
             app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
         <Button
             android:id="@+id/btnLoginNext"
-            android:layout_width="214dp"
+            android:layout_width="300dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/naranja"
             android:text="Entra"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.441"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCrearCompte" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="331dp"
-            android:layout_height="305dp"
-            android:layout_marginTop="60dp"
-            android:src="@drawable/logotransparente"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.375"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewCrearCompteBTN" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-

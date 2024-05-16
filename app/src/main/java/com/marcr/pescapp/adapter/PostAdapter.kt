@@ -26,6 +26,7 @@ class PostAdapter(
             Glide.with(binding.imagePost.context).load(post.imagePost).into(binding.imagePost)
             binding.title.text = post.titlePost
             binding.numLikes.text = post.likes.size.toString()
+            binding.numComments.text = post.comments.size.toString()
 
             if (post.likes.contains(email)) {
                 binding.imgLike.setBackgroundResource(R.drawable.silike)
@@ -35,6 +36,10 @@ class PostAdapter(
 
             binding.imgLike.setOnClickListener {
                 listener.onLikeClick(post.id, adapterPosition)
+            }
+
+            binding.imgComment.setOnClickListener {
+                listener.onCommentClick(post.id)
             }
         }
     }
