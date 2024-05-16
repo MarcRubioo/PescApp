@@ -99,7 +99,7 @@
             android:id="@+id/textViewInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="92dp"
+            android:layout_marginTop="56dp"
             android:text="Datos de la Cuenta"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -134,13 +134,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/textViewInfo">
 
                 <ImageView
-                    android:layout_marginTop="-36dp"
-                    android:layout_marginLeft="-54dp"
                     android:id="@+id/imageProfile"
                     android:layout_width="220dp"
                     android:layout_height="220dp"
-                    tools:srcCompat="@tools:sample/avatars"
-                    />
+                    android:layout_marginLeft="-54dp"
+                    android:layout_marginTop="-36dp"
+                    tools:srcCompat="@tools:sample/avatars" />
 
             </androidx.cardview.widget.CardView>
 

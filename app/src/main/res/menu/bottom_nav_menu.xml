@@ -5,14 +5,14 @@
         android:id="@+id/principalPostsFragment2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Posts"
+        android:title="Publicaciones"
         android:icon="@drawable/iconhome" />
 
     <item
         android:id="@+id/addPostFragment2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="AddPost"
+        android:title="Añadir"
         android:icon="@drawable/iconadd"/>
 
     <item
