@@ -38,6 +38,7 @@ class FragmentLogin : Fragment() {
     private fun setupObservers() {
         viewModel.loginSuccess.observe(viewLifecycleOwner, Observer { success ->
             if (success) {
+                Toast.makeText(requireContext(), "Inicio de sessión correcto", Toast.LENGTH_SHORT).show()
                 showHome()
             } else {
                 Toast.makeText(requireContext(), "Error al iniciar sesión", Toast.LENGTH_SHORT).show()

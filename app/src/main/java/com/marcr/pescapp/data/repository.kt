@@ -2,6 +2,7 @@ package com.marcr.pescapp.data
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.play.integrity.internal.i
@@ -30,39 +31,55 @@ class repository {
             }
         }
 
+        fun logoutUser(context: Context, callback: (Boolean) -> Unit) {
+            FirebaseAuth.getInstance().signOut()
+            callback(true)
+        }
+
 
         fun registerUser(user: User, context: Context, callback: (Boolean) -> Unit) {
             GlobalScope.launch(Dispatchers.IO) {
-                var imguri: String
                 val db = FirebaseFirestore.getInstance()
                 val storage = FirebaseStorage.getInstance()
-                storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
-                    imguri = uri.toString()
 
-                    if (imguri != null) {
-                        user.password?.let {
-                            FirebaseAuth.getInstance()
-                                .createUserWithEmailAndPassword(user.email, it)
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        db.collection("users").document(user.email).set(
-                                            hashMapOf(
-                                                "name" to user.name,
-                                                "email" to user.email,
-                                                "password" to user.password,
-                                                "edat" to user.age,
-                                                "img" to imguri,
-                                                "description" to user.description,
-                                                "followers" to user.followersList,
-                                                "following" to user.followingList
-                                            )
-                                        )
-                                        callback(true)
-                                    } else {
-                                        callback(false)
-                                    }
-                                }
+
+                FirebaseAuth.getInstance().fetchSignInMethodsForEmail(user.email).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val signInMethods = task.result?.signInMethods ?: emptyList()
+                        if (signInMethods.isNotEmpty()) {
+                            callback(false)
+                            return@addOnCompleteListener
                         }
+
+                        storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
+                            val imguri = uri.toString()
+
+                            user.password?.let {
+                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.email, it)
+                                    .addOnCompleteListener { createUserTask ->
+                                        if (createUserTask.isSuccessful) {
+                                            db.collection("users").document(user.email).set(
+                                                hashMapOf(
+                                                    "name" to user.name,
+                                                    "email" to user.email,
+                                                    "password" to user.password,
+                                                    "edat" to user.age,
+                                                    "img" to imguri,
+                                                    "description" to user.description,
+                                                    "followers" to user.followersList,
+                                                    "following" to user.followingList
+                                                )
+                                            )
+                                            callback(true)
+                                        } else {
+                                            callback(false)
+                                        }
+                                    }
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "Este email esta en uso ", Toast.LENGTH_SHORT).show()
+                        callback(false)
                     }
                 }
             }

@@ -21,10 +21,10 @@ class PostAdapter(
 
         fun bind(post: Post) {
             binding.email.text = post.email
-            binding.category.text = post.categoryPost
+            binding.category.text = "Categoria: " +  post.categoryPost
             binding.site.text = post.sitePost
             Glide.with(binding.imagePost.context).load(post.imagePost).into(binding.imagePost)
-            binding.title.text = post.titlePost
+            binding.title.text = "Descripcion: " + post.titlePost
             binding.numLikes.text = post.likes.size.toString()
             binding.numComments.text = post.comments.size.toString()
 

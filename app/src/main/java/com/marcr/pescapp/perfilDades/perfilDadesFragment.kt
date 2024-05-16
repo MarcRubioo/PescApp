@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.marcr.pescapp.FragmentActivity
 import com.marcr.pescapp.MainActivity
 import com.marcr.pescapp.R
 import com.marcr.pescapp.databinding.FragmentPerfilDadesBinding
@@ -88,18 +89,18 @@ class perfilDadesFragment : Fragment() {
         }
 
 
-//        binding.btnEliminar.setOnClickListener{
-//            if (userLog != null) {
-//                viewModel.deleteUser(requireContext(), userLog.email.toString()) { success ->
-//                    if (success) {
-//                        Toast.makeText(requireContext(), "Usuario Eliminado!", Toast.LENGTH_SHORT).show()
-//                        showHome()
-//                    } else {
-//                        Toast.makeText(requireContext(), "Problemas al eliminar el Usuario", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        }
+        binding.textViewCerrarSession.setOnClickListener {
+            viewModel.logoutUser(requireContext()) { success ->
+                if (success) {
+                    Toast.makeText(requireContext(), "Sesión Cerrada", Toast.LENGTH_SHORT).show()
+                    goLogin()
+
+                } else {
+                    Toast.makeText(requireContext(), "Problemas al cerrar la sesión", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
 
         binding.imageView3.setOnClickListener{
 
@@ -109,7 +110,7 @@ class perfilDadesFragment : Fragment() {
 
         return binding.root
     }
-    private fun showHome() {
+    private fun goLogin() {
         val homeIntent = Intent(requireContext(), MainActivity::class.java).apply {}
         startActivity(homeIntent)
     }

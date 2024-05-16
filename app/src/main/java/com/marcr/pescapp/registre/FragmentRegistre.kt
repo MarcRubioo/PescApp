@@ -37,6 +37,7 @@ class FragmentRegistre : Fragment() {
                 if(binding.editTextPassword.text.toString() == (binding.editTextConfirmPassword.text.toString())){
                     viewModel.registerUser(requireContext(), binding.editTextEmail2.text.toString(), binding.editTextUser.text.toString(), binding.editTextPassword.text.toString(), binding.editTextEdat.text.toString(), "") { success ->
                         if (success) {
+                            Toast.makeText(requireContext(), "Usuario registrado", Toast.LENGTH_SHORT).show()
                             findNavController().navigate(R.id.action_fragmentRegistre_to_fragmentLogin, null)
                         } else {
                             Toast.makeText(requireContext(), "Error al registrar usuario", Toast.LENGTH_SHORT).show()

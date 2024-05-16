@@ -3,6 +3,7 @@ package com.marcr.pescapp.perfilDades
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.marcr.pescapp.data.User
 import com.marcr.pescapp.data.repository
 
@@ -34,4 +35,14 @@ class ViewModelPerfilDades: ViewModel() {
             callback(success)
         }
     }
+
+    fun logoutUser(context: Context, callback: (Boolean) -> Unit) {
+        repository.logoutUser(context) { success ->
+            if (success) {
+                FirebaseAuth.getInstance().signOut()
+            }
+            callback(success)
+        }
+    }
+
 }

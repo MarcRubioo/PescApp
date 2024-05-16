@@ -72,18 +72,30 @@
             android:text="Seleccionar Imagen"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageSelector" />
+            app:layout_constraintTop_toBottomOf="@+id/cardImg" />
 
-        <ImageView
-            android:id="@+id/imageSelector"
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardImg"
             android:layout_width="190dp"
             android:layout_height="117dp"
-            android:layout_marginTop="128dp"
-            android:src="@drawable/addpostimage"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.475"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.161">
+
+            <ImageView
+                android:id="@+id/imageSelector"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/addpostimage" />
+
+        </androidx.cardview.widget.CardView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
