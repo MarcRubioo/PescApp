@@ -32,8 +32,10 @@ class repository {
         }
 
         fun logoutUser(context: Context, callback: (Boolean) -> Unit) {
-            FirebaseAuth.getInstance().signOut()
-            callback(true)
+            GlobalScope.launch(Dispatchers.IO) {
+                FirebaseAuth.getInstance().signOut()
+                callback(true)
+            }
         }
 
 
@@ -43,45 +45,48 @@ class repository {
                 val storage = FirebaseStorage.getInstance()
 
 
-                FirebaseAuth.getInstance().fetchSignInMethodsForEmail(user.email).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val signInMethods = task.result?.signInMethods ?: emptyList()
-                        if (signInMethods.isNotEmpty()) {
-                            callback(false)
-                            return@addOnCompleteListener
-                        }
-
-                        storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
-                            val imguri = uri.toString()
-
-                            user.password?.let {
-                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.email, it)
-                                    .addOnCompleteListener { createUserTask ->
-                                        if (createUserTask.isSuccessful) {
-                                            db.collection("users").document(user.email).set(
-                                                hashMapOf(
-                                                    "name" to user.name,
-                                                    "email" to user.email,
-                                                    "password" to user.password,
-                                                    "edat" to user.age,
-                                                    "img" to imguri,
-                                                    "description" to user.description,
-                                                    "followers" to user.followersList,
-                                                    "following" to user.followingList
-                                                )
-                                            )
-                                            callback(true)
-                                        } else {
-                                            callback(false)
-                                        }
-                                    }
+                FirebaseAuth.getInstance().fetchSignInMethodsForEmail(user.email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val signInMethods = task.result?.signInMethods ?: emptyList()
+                            if (signInMethods.isNotEmpty()) {
+                                callback(false)
+                                return@addOnCompleteListener
                             }
+
+                            storage.reference.child("defaultprofilephote.png").downloadUrl.addOnSuccessListener { uri ->
+                                val imguri = uri.toString()
+
+                                user.password?.let {
+                                    FirebaseAuth.getInstance()
+                                        .createUserWithEmailAndPassword(user.email, it)
+                                        .addOnCompleteListener { createUserTask ->
+                                            if (createUserTask.isSuccessful) {
+                                                db.collection("users").document(user.email).set(
+                                                    hashMapOf(
+                                                        "name" to user.name,
+                                                        "email" to user.email,
+                                                        "password" to user.password,
+                                                        "edat" to user.age,
+                                                        "img" to imguri,
+                                                        "description" to user.description,
+                                                        "followers" to user.followersList,
+                                                        "following" to user.followingList
+                                                    )
+                                                )
+                                                callback(true)
+                                            } else {
+                                                callback(false)
+                                            }
+                                        }
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, "Este email esta en uso ", Toast.LENGTH_SHORT)
+                                .show()
+                            callback(false)
                         }
-                    } else {
-                        Toast.makeText(context, "Este email esta en uso ", Toast.LENGTH_SHORT).show()
-                        callback(false)
                     }
-                }
             }
         }
 
@@ -540,7 +545,9 @@ class repository {
 
                         postRef.get().addOnSuccessListener { document ->
                             if (document.exists()) {
-                                val comments = document.get("comments") as? List<Map<String, String>> ?: emptyList()
+                                val comments =
+                                    document.get("comments") as? List<Map<String, String>>
+                                        ?: emptyList()
                                 val commentList = comments.map {
                                     Comment(it["email"] ?: "", it["description"] ?: "")
                                 }
