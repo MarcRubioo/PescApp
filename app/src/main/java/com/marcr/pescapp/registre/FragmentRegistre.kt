@@ -28,6 +28,10 @@ class FragmentRegistre : Fragment() {
 
         setup()
 
+        binding.imageGoBack.setOnClickListener {
+            findNavController().navigate(R.id.action_fragmentRegistre_to_fragmentLogin)
+        }
+
         return binding.root
     }
 
